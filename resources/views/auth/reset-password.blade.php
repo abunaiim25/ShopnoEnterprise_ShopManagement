@@ -5,6 +5,14 @@
         </x-slot>
 
         <x-jet-validation-errors class="mb-4" />
+        @php
+        $front = App\Models\FrontControl::first();
+        @endphp
+        <a href="/" style="display: flex; justify-content:center; margin-bottom:10px">
+            <img style="width: 70px;" src="{{ asset('img_DB/front/logo/' . $front->logo_small) }}" alt="">
+        </a>
+        <h1 style="margin-bottom: 20px; font-size: 1.7rem; display: flex; justify-content:center;"><b>Reset Password</b></h1>
+
 
         <form method="POST" action="{{ route('password.update') }}">
             @csrf

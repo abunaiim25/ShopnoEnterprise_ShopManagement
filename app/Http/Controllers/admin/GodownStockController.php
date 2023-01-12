@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class GodownStockController extends Controller
-{ 
+{
     public function index()
     {
         $stock =  DB::table('godown_stocks')
@@ -98,6 +98,7 @@ class GodownStockController extends Controller
     {
         $stock =  DB::table('godown_stocks')
             ->join('categories', 'godown_stocks.category_id', 'categories.id')
+            ->select("godown_stocks.*", "categories.category_name as category_name")
 
             ->where('product_name', 'like', '%' . $request->search . '%')
             ->orWhere('brand', 'like', '%' . $request->search . '%')

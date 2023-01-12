@@ -100,6 +100,10 @@ $front = App\Models\FrontControl::first();
     </script>
     <!--End Product Autocomplite search-->
 
+    <!--invoice Autocomplite search-->
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT
+        2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous">
+    </script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="/resources/demos/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
@@ -120,6 +124,7 @@ $front = App\Models\FrontControl::first();
             });
         }
     </script>
+    <!--End invoice Autocomplite search-->
 
 
     <!--User Autocomplite search-->

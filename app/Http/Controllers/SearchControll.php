@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\InvoiceBillItem;
+use App\Models\PurchaseReturn;
 use App\Models\ShopStock;
 use Illuminate\Http\Request;
 
@@ -17,11 +19,14 @@ class SearchControll extends Controller
         return $data;
     }
 
-    public function autocompleteSearch(Request $request)
+    public function purchase_return_name_autocomplete_search_ajax()
     {
-        $query = $request->get('query');
-        //$filterResult = ShopStock::select('product_name')->where('status', '1')->where('product_quantity', '>', 0)->where('product_name', 'LIKE', '%' . $query . '%')->get();
-        $filterResult = ShopStock::where('product_name', 'LIKE', '%' . $query . '%')->get();
-        return response()->json($filterResult);
-    } 
+        $product = InvoiceBillItem::select('product_desc')->get();
+        $data = [];
+
+        foreach ($product as $item) {
+            $data[] = $item['product_desc'];
+        }
+        return $data;
+    }
 }

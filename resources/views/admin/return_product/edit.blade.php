@@ -44,7 +44,7 @@ Admin - Purchase Return
                             <div class="col-lg-3 col-md-6">
                                 <div class="form-group">
                                     <label>Product Name: </label>
-                                    <input class="form-control" type="text" name="product_name" value="{{$return_product->product_name}}" placeholder="Router22" required>
+                                    <input type="text" id="search_purchase_return_name" name="search" value="{{$return_product->product_name}}" placeholder="Search Product" class="form-control" />
                                 </div>
                             </div>
 

@@ -4,14 +4,22 @@
             <x-jet-authentication-card-logo />
         </x-slot>
 
+        @php
+        $front = App\Models\FrontControl::first();
+        @endphp
+        <a href="/" style="display: flex; justify-content:center; margin-bottom:10px">
+            <img style="width: 70px;" src="{{ asset('img_DB/front/logo/' . $front->logo_small) }}" alt="">
+        </a>
+        <h1 style="margin-bottom: 20px; font-size: 1.7rem; display: flex; justify-content:center;"><b>Forgot Password</b></h1>
+
         <div class="mb-4 text-sm text-gray-600">
             {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
         </div>
 
         @if (session('status'))
-            <div class="mb-4 font-medium text-sm text-green-600">
-                {{ session('status') }}
-            </div>
+        <div class="mb-4 font-medium text-sm text-green-600">
+            {{ session('status') }}
+        </div>
         @endif
 
         <x-jet-validation-errors class="mb-4" />

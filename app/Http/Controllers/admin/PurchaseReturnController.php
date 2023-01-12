@@ -95,7 +95,7 @@ class PurchaseReturnController extends Controller
     {
         $return_product = DB::table('purchase_returns')
         ->join('categories', 'purchase_returns.category_id', 'categories.id')
-        //->select("shop_stocks.*", "categories.category_name as category_name")
+        ->select("purchase_returns.*", "categories.category_name as category_name")
         ->where('product_name', 'like', '%' . $request->search . '%')
             ->orWhere('brand', 'like', '%' . $request->search . '%')
             ->orWhere('product_quantity', 'like', '%' . $request->search . '%')

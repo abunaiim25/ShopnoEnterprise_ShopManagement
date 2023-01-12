@@ -1,8 +1,7 @@
 @extends('layouts.frontend_layout')
 
-
 @section('title')
-Online Marketing - Home
+Shopno Enterprise - Home
 @endsection
 
 @php

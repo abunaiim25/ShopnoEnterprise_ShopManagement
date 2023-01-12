@@ -111,15 +111,15 @@ class StockController extends Controller
     public function shop_stock_search(Request $request)
     {
         $stock = DB::table('shop_stocks')
-            //->join('categories', 'shop_stocks.category_id', 'categories.id')
-            //->select("shop_stocks.*", "categories.category_name as category_name")
+            ->join('categories', 'shop_stocks.category_id', 'categories.id')
+            ->select("shop_stocks.*", "categories.category_name as category_name")
             ->where('product_name', 'like', '%' . $request->search . '%')
             ->orWhere('brand', 'like', '%' . $request->search . '%')
             ->orWhere('product_quantity', 'like', '%' . $request->search . '%')
             ->orWhere('per_cost_price', 'like', '%' . $request->search . '%')
             ->orWhere('per_selling_price', 'like', '%' . $request->search . '%')
 
-           // ->orWhere('category_name', 'like', '%' . $request->search . '%')
+            ->orWhere('category_name', 'like', '%' . $request->search . '%')
             ->paginate(20);
         return view("admin.Stock.index", compact("stock"));
     }

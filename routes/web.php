@@ -38,7 +38,6 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('category_search', [CategoryController::class, 'category_search']);
     Route::get('/category_autocomplete_search', [CategoryController::class, 'category_autocomplete_search_ajax']);
 
-
     //================Admin Shop stock========================
     Route::get('admin_shop_stock', [StockController::class, 'index']);
     Route::get('admin_add_shop_stoke', [StockController::class, 'add_stoke_page']);
@@ -54,7 +53,7 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 
     //================Admin product search========================
     Route::get('/product-list', [SearchControll::class, 'product_list_ajax']);
-    Route::get('/autocomplete-search', [SearchControll::class, 'autocompleteSearch']);
+    Route::get('/purchase_return_name_autocomplete_search', [SearchControll::class, 'purchase_return_name_autocomplete_search_ajax']);
 
     //================Admin Godown stock========================
     Route::get('admin_godown_stock', [GodownStockController::class, 'index']);
@@ -117,7 +116,6 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('admin_front_control', [FrontcontrolController::class, 'admin_front_control']);
     Route::post('front_control_store', [FrontcontrolController::class, 'front_control_store']);
 
-
     //======================PurchaseReturnController=========================
     Route::get('purchase_return', [PurchaseReturnController::class, 'index']);
     Route::get('add_purchase_return_page', [PurchaseReturnController::class, 'add_purchase_return_page']);
@@ -129,13 +127,7 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('purchase_return_done/{id}', [PurchaseReturnController::class, 'purchase_return_done']);
     Route::get('purchase_return_search', [PurchaseReturnController::class, 'purchase_return_search']);
     Route::get('/purchase_return_autocomplete_search', [PurchaseReturnController::class, 'purchase_return_autocomplete_search_ajax']);
-    
-    
 });
-
-
-
-//===================================================================================================
 
 
 //================Frontend Home========================

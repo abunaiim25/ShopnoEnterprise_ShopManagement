@@ -24,9 +24,9 @@ class InvoiceBillController extends Controller
             ->join('customer_information', 'invoice_bills.id', 'customer_information.order_id') //join
             ->select("invoice_bills.*", "customer_information.name as name", "customer_information.date as date", "customer_information.phone as phone") //if same column in a table
             ->orderBy('invoice_bills.id', 'DESC')->paginate(20);
-            
-            $subtotal = DB::table('invoice_bills')->select('subtotal')->sum('subtotal');
-            $bill_count = DB::table('invoice_bills')->select('subtotal')->count('subtotal');
+
+        $subtotal = DB::table('invoice_bills')->select('subtotal')->sum('subtotal');
+        $bill_count = DB::table('invoice_bills')->select('subtotal')->count('subtotal');
 
         //dd($invoice_bill);
         return view("admin.InvoiceBill.index", compact('invoice_bill', 'subtotal', 'bill_count'));
@@ -54,7 +54,9 @@ class InvoiceBillController extends Controller
         $subtotal = ProductInvoice::all()->where('user_ip', request()->ip())->sum(function ($t) {
             return $t->price * $t->qty;
         });
-        return view("admin.InvoiceBill.add_invoice", compact('product_invoice', 'subtotal'));
+        $stock = DB::table('shop_stocks')->latest()->get();
+
+        return view("admin.InvoiceBill.add_invoice", compact('product_invoice', 'subtotal', 'stock'));
     }
 
     //======================product_invoice_store======================
@@ -66,14 +68,15 @@ class InvoiceBillController extends Controller
             'warranty' => 'integer',
         ]);
 
-        ProductInvoice::insert([
-            'product_desc' => $request->product_desc,
-            'warranty' => $request->warranty,
-            'qty' => $request->qty,
-            'price' => $request->price,
-            'user_ip' => request()->ip(),
-        ]);
-        return Redirect()->back();
+            ProductInvoice::insert([
+                'product_desc' => $request->product_desc,
+                'warranty' => $request->warranty,
+                'qty' => $request->qty,
+                'price' => $request->price,
+                'user_ip' => request()->ip(),
+            ]);
+       
+        return Redirect()->back()->with('status_swal', 'Product Added');
     }
     //======================admin_product_invoice_delete======================
     public function admin_product_invoice_delete($id)
@@ -129,7 +132,6 @@ class InvoiceBillController extends Controller
         //delete from cart
         ProductInvoice::where('user_ip', request()->ip())->delete();
 
-        //
         return Redirect()->to('/admin_invoice_bill')->with('status_swal', 'Invoice/Bill Added Successfully');
     }
 
@@ -225,7 +227,7 @@ class InvoiceBillController extends Controller
         }
         $subtotal = $query->select('subtotal')->sum('subtotal');
         $bill_count = $query->select('subtotal')->count('subtotal');
-             
+
         return view("admin.InvoiceBill.index", compact("invoice_bill", 'subtotal', 'bill_count'));
     }
 
@@ -251,29 +253,30 @@ class InvoiceBillController extends Controller
         }
         return $data;
     }
-    
-    
-    public function date_from_to_search(Request $request){
+
+
+    public function date_from_to_search(Request $request)
+    {
         $fromDate = $request->input('fromDate');
         $toDate = $request->input('toDate');
-        
-         $invoice_bill =  DB::table('customer_information')
-        ->join('invoice_bills', 'customer_information.order_id', 'invoice_bills.id')
-        ->whereBetween('date', [
-            $fromDate,
-            Carbon::parse($toDate)->endOfDay(),
-        ])->paginate(20);
-        
+
+        $invoice_bill =  DB::table('customer_information')
+            ->join('invoice_bills', 'customer_information.order_id', 'invoice_bills.id')
+            ->whereBetween('date', [
+                $fromDate,
+                Carbon::parse($toDate)->endOfDay(),
+            ])->paginate(20);
+
         $subtotal = DB::table('customer_information')
             ->join('invoice_bills', 'customer_information.order_id', 'invoice_bills.id')
             ->whereBetween('date', [$fromDate, Carbon::parse($toDate)->endOfDay(),])
-        ->select('subtotal')->sum('subtotal');
+            ->select('subtotal')->sum('subtotal');
 
         $bill_count = DB::table('customer_information')
-        ->join('invoice_bills', 'customer_information.order_id', 'invoice_bills.id')
-        ->whereBetween('date', [$fromDate, Carbon::parse($toDate)->endOfDay(),])
-        ->select('subtotal')->count('subtotal');
-        
-        return view('admin.InvoiceBill.index', compact('invoice_bill','subtotal', 'bill_count'));
+            ->join('invoice_bills', 'customer_information.order_id', 'invoice_bills.id')
+            ->whereBetween('date', [$fromDate, Carbon::parse($toDate)->endOfDay(),])
+            ->select('subtotal')->count('subtotal');
+
+        return view('admin.InvoiceBill.index', compact('invoice_bill', 'subtotal', 'bill_count'));
     }
 }

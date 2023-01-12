@@ -30,6 +30,10 @@ Admin - Add Invoice
             <div class="card-header pb-0">
                 <div style="display: flex; justify-content: space-between;" class="">
                     <h6>Add Product</h6>
+
+                    <button type="button" class="btn btn-warning btn-rounded" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <i class="fas fa-eye"></i> Stock Remaining
+                    </button>
                 </div>
             </div>
 
@@ -53,7 +57,7 @@ Admin - Add Invoice
                                 <tr>
                                     <td>
                                         <div classs="form-group">
-                                            <input type="text" id="search_stock_product_name" name="search" placeholder="Search" class="form-control" />
+                                            <input name="product_desc" type="text" id="search_stock_product_name" placeholder="Search Product" class="form-control" />
                                         </div>
                                     </td>
 
@@ -216,6 +220,72 @@ Admin - Add Invoice
         </div>
     </div>
 </div>
+
+
+<!--Create Modal-->
+<form action="customer_ledger_store" method="POST">
+    @csrf
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog " role="document">
+            <div class="modal-content  bg-white">
+
+                <div style="display: flex; justify-content: space-between;" class="mx-4 mt-4">
+                    <h6>Stock Remaining</h6>
+
+                    <a href="{{url('/admin_shop_stock')}}" target="_blank" class=" btn btn-sm btn-warning btn-rounded">Go Shop Stock</a>
+                </div>
+
+
+                <div class="modal-body mx-3">
+                    <div class="card-body px-0 pt-0 pb-2">
+                        <div class="table-responsive p-0">
+                            @if ($stock->count() > 0)
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Sl</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Product Name</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Quantity</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach ($stock as $row)
+                                    <tr>
+                                        <td class="align-middle ">
+                                            <span class="text-secondary text-xs font-weight-bold mx-3">{{$loop->iteration}}</span>
+                                        </td>
+
+                                        <td class="align-middle ">
+                                            <span class="text-secondary text-xs font-weight-bold">{{ $row->product_name }}</span>
+                                        </td>
+
+                                        @if($row->product_quantity > 0)
+                                        <td class="align-middle text-center text-sm">
+                                            <span class="badge badge-sm bg-gradient-success">{{ $row->product_quantity }} In Shop Stock</span>
+                                        </td>
+                                        @else
+                                        <td class="align-middle text-center text-sm">
+                                            <span class="badge badge-sm bg-gradient-secondary">{{ $row->product_quantity }} Out Of Shop Stock</span>
+                                        </td>
+                                        @endif
+
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            @else
+                            <h2 class="text-center p-5">Purchase Return Not Available</h2>
+                            @endif
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<!--End Create Modal-->
 @endsection
 
 

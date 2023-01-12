@@ -51,7 +51,7 @@ Admin - Godown Stock
                         <thead>
                             <tr>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Sl</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date & Time</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date (mm/dd/yyyy)</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Product Name</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Category</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Brand</th>
@@ -70,7 +70,7 @@ Admin - Godown Stock
                                 </td>
 
                                 <td class="align-middle ">
-                                    <span class="text-secondary text-xs font-weight-bold">{{$row->updated_at ?? $row->created_at}}</span>
+                                    <span class="text-secondary text-xs font-weight-bold">{{ \Carbon\Carbon::parse($row->updated_at ?? $row->created_at)->format('m/d/Y')}}</span>
                                 </td>
 
                                 <td class="align-middle ">
