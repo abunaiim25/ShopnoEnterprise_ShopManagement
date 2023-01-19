@@ -12,6 +12,7 @@ use App\Models\InvoiceBillItem;
 use App\Models\LedgerCustomer;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\PurchaseReturn;
 use App\Models\ShopStock;
 use App\Models\Team;
 use App\Models\User;
@@ -42,6 +43,7 @@ class HomeController extends Controller
                 $admin = User::where('usertype', '=', '1')->count();
                 $people = User::count();
                 $godown = GodownStock::count();
+                $purchase_return=PurchaseReturn::count();
                 $subtotal = DB::table('invoice_bills')->select('subtotal')->sum('subtotal');
 
 
@@ -52,7 +54,7 @@ class HomeController extends Controller
                         'y' => $row->per_selling_price
                     );
                 }
-                return view('admin.index', ['data' => $data], compact('invoice', 'ledger_customer', 'godown', 'stock', 'category', 'contact', 'contact_unseen', 'user', 'admin', 'subtotal', 'people'));
+                return view('admin.index', ['data' => $data], compact('invoice', 'ledger_customer', 'godown', 'stock', 'category', 'contact', 'contact_unseen', 'user', 'admin', 'subtotal', 'people', 'purchase_return'));
             }
         } else {
 

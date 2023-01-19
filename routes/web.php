@@ -118,6 +118,7 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 
     //======================PurchaseReturnController=========================
     Route::get('purchase_return', [PurchaseReturnController::class, 'index']);
+    Route::get('purchase_return_back', [PurchaseReturnController::class, 'purchase_return_back']);
     Route::get('add_purchase_return_page', [PurchaseReturnController::class, 'add_purchase_return_page']);
     Route::post('store_purchase_return', [PurchaseReturnController::class, 'store_purchase_return']);
     Route::get('purchase_return_edit/{id}', [PurchaseReturnController::class, 'purchase_return_edit']);

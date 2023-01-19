@@ -175,6 +175,31 @@ Shopna Enterprise - Admin
                 <div class="col-lg-3 col-md-6 col-6">
                     <div class="card l-bg-green-dark">
                         <div class="card-statistic-3 p-4">
+                            <div class="card-icon card-icon-large"><i class="fas fa-check"></i></div>
+                            <a style="text-decoration: none;" href="{{url('purchase_return')}}" target="_blank">
+                                <div class="row">
+                                    <div class="col-9">
+                                        <div class="d-flex align-items-center align-self-start ">
+                                            <h6 class="mb-0 text-white">Purchase Return</h6>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="icon icon-box-danger">
+                                            <span class="mdi mdi-arrow-top-right icon-item"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h2 class="text-white">{{ $purchase_return }}
+                                </h2>
+
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-6">
+                    <div class="card l-bg-orange-dark">
+                        <div class="card-statistic-3 p-4">
                             <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
                             <a style="text-decoration: none;" href="{{url('admin_shop_stock')}}" target="_blank">
                                 <div class="row">
@@ -221,7 +246,7 @@ Shopna Enterprise - Admin
                 </div>
 
                 <div class="col-lg-3 col-md-6 col-6">
-                    <div class="card l-bg-orange-dark">
+                    <div class="card l-bg-green-dark">
                         <div class="card-statistic-3 p-4">
                             <div class="card-icon card-icon-large"><i class="fas fa-comment"></i></div>
                             <a style="text-decoration: none;" href="{{url('admin_contact')}}" target="_blank">
@@ -241,37 +266,11 @@ Shopna Enterprise - Admin
                                     <h2 class="text-white">{{ $contact }} </h2>
                                     <p class="text-danger">{{$contact_unseen}} Unseen</p>
                                 </div>
-
-
                             </a>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-md-6 col-6">
-                    <div class="card l-bg-green-dark">
-                        <div class="card-statistic-3 p-4">
-                            <div class="card-icon card-icon-large"><i class="fas fa-users"></i></div>
-                            <a style="text-decoration: none;" href="{{url('admins')}}" target="_blank">
-                                <div class="row">
-                                    <div class="col-9">
-                                        <div class="d-flex align-items-center align-self-start ">
-                                            <h6 class="mb-0 text-white">Admins</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-3">
-                                        <div class="icon icon-box-danger">
-                                            <span class="mdi mdi-arrow-top-right icon-item"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <h2 class="text-white">{{ $admin }}
-                                </h2>
-
-                            </a>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="col-lg-3 col-md-6 col-6">
                     <div class="card l-bg-blue-dark">

@@ -16,16 +16,19 @@ return new class extends Migration
         Schema::create('purchase_returns', function (Blueprint $table) {
             $table->id();
             $table->string('product_name')->nullable();
+            $table->integer('order_id')->nullable();
             $table->integer('category_id')->nullable();
             $table->string('brand')->nullable();
             $table->string('product_quantity')->nullable();
+            $table->string('warranty')->nullable();
+            $table->string('warranty_duration')->nullable();
+            $table->integer('used')->nullable();
             $table->string('return_reason')->nullable();
             $table->string('comment')->nullable();
-            $table->string('return_status')->default('Pending')->nullable();
             $table->timestamps();
         });
     }
-
+    
     /**
      * Reverse the migrations.
      *

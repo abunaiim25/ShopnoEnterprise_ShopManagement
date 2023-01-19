@@ -26,136 +26,104 @@ Admin - Purchase Return
 
 <div class="row">
 
-    <div class="col-md-12">
-
-        <form action="{{ url('store_purchase_return') }}" method="POST">
-            @csrf
-
-
-            <div class="card mb-4">
-                <div class="card-header pb-0">
-                    <div style="display: flex; justify-content: space-between;">
-                        <h6>Customer Information</h6>
-                    </div>
-                </div>
-
-                <div class="card-body px-0 pt-0 pb-2">
-                    <div class="table-responsive px-4">
-                        <div class="row mt-3">
-                            <div class="col-lg-4 col-md-6">
-                                <div class="form-group">
-                                    <label>Customer Name: </label>
-                                    <input class="form-control" type="text" name="name" placeholder="Abu Naiim" required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 col-md-6">
-                                <div class="form-group">
-                                    <label>Number: </label>
-                                    <input class="form-control" type="text" name="phone" placeholder="01xxxxxxxxx" required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 col-md-6">
-                                <div class="form-group">
-                                    <label>Email: </label>
-                                    <input class="form-control" type="text" name="email" placeholder="email@gmail.com" required>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <div class="col-md-12 ">
+        <div class="card mb-4 ">
+            <div class="card-header pb-0">
+                <div style="display: flex; justify-content: space-between;" class="mb-2">
                 </div>
             </div>
 
-
-            <div class="card mb-4">
-                <div class="card-header pb-0">
-                    <div style="display: flex; justify-content: space-between;">
-                        <h6>Product Information</h6>
-                        <a href="javascript:void(0)" class="add-more-form btn btn-success btn-sm">+</a>
-                    </div>
-                </div>
-
-                <div class="card-body px-0 pt-0">
-                    <div class="table-responsive px-4">
-                        <div class="row mt-3">
-
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Product Name: </label>
-                                    <input type="text" id="search_purchase_return_name" name="product_name[]" placeholder="Search Product" class="form-control" />
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <label>Category:</label>
-                                <div class="form-group">
-                                    <select required class="form-control" name="category_id[]" data-placeholder="Choose Category">
-                                        <option label="Choose category"></option>
-                                        @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->category_name }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Brand:</label>
-                                    <input class="form-control" type="text" name="brand[]" placeholder="TP-Link" required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Quantity:</label>
-                                    <input class="form-control" type="number" name="product_quantity[]" placeholder="10" required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Warranty:</label>
-                                    <select class="form-select" name="warranty[]" aria-label="Default select example">
-                                        <option selected>Warranty</option>
-                                        <option value="None Warranty">None Warranty</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Warranty Duration:</label>
-                                    <input class="form-control" type="number" name="warranty_duration[]" placeholder="1" required>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Used(month/year):</label>
-                                    <input class="form-control" type="number" name="used[]" placeholder="1" required>
-                                </div>
-                            </div>
-                            <div class="col-lg-5 col-md-6">
-                                <div class="form-group">
-                                    <label>Return Reason:</label>
-                                    <input class="form-control" type="text" name="return_reason[]" placeholder="Item arrived too late" required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-5 col-md-6 ">
-                                <div class="form-group">
-                                    <label>Comment/Required:</label>
-                                    <input class="form-control" type="text" name="comment[]" placeholder="Not required any more" required>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="card-body px-0 pt-0 pb-2">
+                <div class="mx-4 p-3 card bg-gradient-primary">
+                    <p class="text-white text-center"><b> Name:</b> {{$customer->name}},
+                        <b> Phone:</b> {{$customer->phone}},
+                        <b> Email:</b> {{$customer->email}}
+                    </p>
                 </div>
             </div>
-            <div class="paste-new-forms"></div>
 
-            <button type="submit" class="btn bg-gradient-info w-100 mb-0">Add</button>
-        </form>
+            <div class="card-body px-0 pt-0 pb-2">
+                <div class="table-responsive p-0">
+                    @if ($product->count() > 0)
+                    <table class="table align-items-center mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Sl</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Name</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Category</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Brand</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Quantity</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Warranty</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Duration</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Used</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Return Reason</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Comment/Required</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach ($product as $row)
+                            <tr>
+                                <td class="align-middle ">
+                                    <span class="text-secondary text-xs font-weight-bold mx-3">{{$loop->iteration}}</span>
+                                </td>
+
+                                <td class="align-middle ">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->product_name }}</span>
+                                </td>
+
+                                <td class="align-middle ">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->category_name }}</span>
+                                </td>
+
+                                <td class="align-middle ">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->brand }}</span>
+                                </td>
+
+                                <td class="align-middle ">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->product_quantity }}</span>
+                                </td>
+
+                                <td class="align-middle ">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->warranty }}</span>
+                                </td>
+
+                                <td class="align-middle ">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->warranty_duration }}</span>
+                                </td>
+
+                                <td class="align-middle ">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->used }}</span>
+                                </td>
+
+                                <td class="align-middle ">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->return_reason }}</span>
+                                </td>
+
+                                <td class="align-middle ">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->comment }}</span>
+                                </td>
+
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    @else
+                    <h2 class="text-center p-5">Purchase Return Not Available</h2>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        @if($customer->return_status == "Pending")
+        <td class="align-middle text-center text-sm">
+            <a class="btn btn-sm bg-gradient-secondary float-end" href="{{ url('purchase_return_done', $customer->id) }}" onclick="return confirm('Are You Sure To Done?')"> Pending <i class="fas fa-thumbs-up"></i></a>
+        </td>
+        @else
+        <td class="align-middle text-center text-sm">
+            <span class="badge badge-sm bg-gradient-success float-end">Done</span>
+        </td>
+        @endif
     </div>
 </div>
 

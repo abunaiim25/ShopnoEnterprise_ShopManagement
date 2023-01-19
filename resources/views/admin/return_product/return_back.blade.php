@@ -18,6 +18,13 @@ Admin - Purchase Return
 {{--search nav--}}
 @section('search_nav')
 <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+    <form action="{{url('purchase_return_search')}}" method="GET" class="search">
+        {{csrf_field()}}
+        <div class="input-group">
+            <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+            <input name="search" id="purchase_return_search" type="text" class="form-control" placeholder="Purchase Return Search">
+        </div>
+    </form>
 </div>
 @endsection
 
@@ -25,143 +32,107 @@ Admin - Purchase Return
 @section('admin_content')
 
 <div class="row">
-
     <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-header pb-0">
 
-        <form action="{{ url('store_purchase_return') }}" method="POST">
-            @csrf
-
-
-            <div class="card mb-4">
-                <div class="card-header pb-0">
-                    <div style="display: flex; justify-content: space-between;">
-                        <h6>Customer Information</h6>
-                    </div>
-                </div>
-
-                <div class="card-body px-0 pt-0 pb-2">
-                    <div class="table-responsive px-4">
-                        <div class="row mt-3">
-                            <div class="col-lg-4 col-md-6">
-                                <div class="form-group">
-                                    <label>Customer Name: </label>
-                                    <input class="form-control" type="text" name="name" placeholder="Abu Naiim" required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 col-md-6">
-                                <div class="form-group">
-                                    <label>Number: </label>
-                                    <input class="form-control" type="text" name="phone" placeholder="01xxxxxxxxx" required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 col-md-6">
-                                <div class="form-group">
-                                    <label>Email: </label>
-                                    <input class="form-control" type="text" name="email" placeholder="email@gmail.com" required>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div style="display: flex; justify-content: space-between;" class="mb-2">
+                    <h6>Purchase Return List</h6>
+                    <a href="{{url('/add_purchase_return_page')}}" class=" btn btn-info btn-rounded">+ Purchase Return</a>
                 </div>
             </div>
 
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="purchase_return">Purchase Return</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="purchase_return_back">Purchase Return Back</a>
+                </li>
+            </ul>
 
-            <div class="card mb-4">
-                <div class="card-header pb-0">
-                    <div style="display: flex; justify-content: space-between;">
-                        <h6>Product Information</h6>
-                        <a href="javascript:void(0)" class="add-more-form btn btn-success btn-sm">+</a>
-                    </div>
-                </div>
 
-                <div class="card-body px-0 pt-0">
-                    <div class="table-responsive px-4">
-                        <div class="row mt-3">
+            <div class="card-body px-0 pt-0 pb-2">
+                <div class="table-responsive p-0">
+                    @if ($customer->count() > 0)
+                    <table class="table align-items-center mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Sl</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date (mm/dd/yyyy)</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Name</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Phone</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Return Status</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+                            </tr>
+                        </thead>
 
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Product Name: </label>
-                                    <input type="text" id="search_purchase_return_name" name="product_name[]" placeholder="Search Product" class="form-control" />
-                                </div>
-                            </div>
+                        <tbody>
+                            @foreach ($customer as $row)
+                            <tr>
+                                <td class="align-middle ">
+                                    <span class="text-secondary text-xs font-weight-bold mx-3">{{$loop->iteration}}</span>
+                                </td>
 
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <label>Category:</label>
-                                <div class="form-group">
-                                    <select required class="form-control" name="category_id[]" data-placeholder="Choose Category">
-                                        <option label="Choose category"></option>
-                                        @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->category_name }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
+                                <td class="align-middle ">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ \Carbon\Carbon::parse($row->updated_at ?? $row->created_at)->format('m/d/Y')}}</span>
+                                </td>
 
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Brand:</label>
-                                    <input class="form-control" type="text" name="brand[]" placeholder="TP-Link" required>
-                                </div>
-                            </div>
+                                <td class="align-middle ">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->name }}</span>
+                                </td>
 
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Quantity:</label>
-                                    <input class="form-control" type="number" name="product_quantity[]" placeholder="10" required>
-                                </div>
-                            </div>
+                                <td class="align-middle ">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->phone }}</span>
+                                </td>
 
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Warranty:</label>
-                                    <select class="form-select" name="warranty[]" aria-label="Default select example">
-                                        <option selected>Warranty</option>
-                                        <option value="None Warranty">None Warranty</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Warranty Duration:</label>
-                                    <input class="form-control" type="number" name="warranty_duration[]" placeholder="1" required>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Used(month/year):</label>
-                                    <input class="form-control" type="number" name="used[]" placeholder="1" required>
-                                </div>
-                            </div>
-                            <div class="col-lg-5 col-md-6">
-                                <div class="form-group">
-                                    <label>Return Reason:</label>
-                                    <input class="form-control" type="text" name="return_reason[]" placeholder="Item arrived too late" required>
-                                </div>
-                            </div>
+                                <td class="align-middle ">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->email }}</span>
+                                </td>
 
-                            <div class="col-lg-5 col-md-6 ">
-                                <div class="form-group">
-                                    <label>Comment/Required:</label>
-                                    <input class="form-control" type="text" name="comment[]" placeholder="Not required any more" required>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                @if($row->return_status == "Pending")
+                                <td class="align-middle text-center text-sm">
+                                    <a class="btn btn-sm bg-gradient-secondary" href="{{ url('purchase_return_done', $row->id) }}" onclick="return confirm('Are You Sure To Done?')"> Pending <i class="fas fa-thumbs-up"></i></a>
+                                </td>
+                                @else
+                                <td class="align-middle text-center text-sm">
+                                    <span class="badge badge-sm bg-gradient-success">Done</span>
+                                </td>
+                                @endif
+
+
+                                <td class="align-middle">
+                                    <a href="{{ url('purchase_return_seen/'. $row->id ) }}" class="btn btn-warning  seenBtn" value=" {{$row->id}}">
+                                        <i class="fas fa-eye"></i> </a>
+                                    </a>
+
+                                    <a href="{{ url('purchase_return_edit/'. $row->id ) }}" class="btn btn-info">
+                                        <i class="fa fa-pencil"></i> </a>
+
+                                    <a href="{{ url('purchase_return_delete/'. $row->id) }}" class="btn btn-danger" onclick="return confirm('Are You Sure To Delete?')"><i class="fa fa-trash"></i> </a>
+                                </td>
+
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    @else
+                    <h2 class="text-center p-5">Purchase Return Not Available</h2>
+                    @endif
                 </div>
             </div>
-            <div class="paste-new-forms"></div>
-
-            <button type="submit" class="btn bg-gradient-info w-100 mb-0">Add</button>
-        </form>
+        </div>
     </div>
 </div>
 
 
 
+<div>
+    {{ $customer->links() }}
+</div>
 @endsection
+
 
 
 {{--page sidebar_for_active--}}

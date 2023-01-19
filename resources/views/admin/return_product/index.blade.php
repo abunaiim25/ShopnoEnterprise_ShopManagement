@@ -38,54 +38,56 @@ Admin - Purchase Return
 
                 <div style="display: flex; justify-content: space-between;" class="mb-2">
                     <h6>Purchase Return List</h6>
-
                     <a href="{{url('/add_purchase_return_page')}}" class=" btn btn-info btn-rounded">+ Purchase Return</a>
                 </div>
             </div>
 
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="purchase_return">Purchase Return</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="purchase_return_back">Purchase Return Back</a>
+                </li>
+            </ul>
 
             <div class="card-body px-0 pt-0 pb-2">
                 <div class="table-responsive p-0">
-                    @if ($return_product->count() > 0)
+                    @if ($customer->count() > 0)
                     <table class="table align-items-center mb-0">
                         <thead>
                             <tr>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Sl</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date & Time</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Product Name</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Category</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Brand</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Quantity</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date (mm/dd/yyyy)</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Name</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Phone</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Return Status</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            @foreach ($return_product as $row)
+                            @foreach ($customer as $row)
                             <tr>
                                 <td class="align-middle ">
                                     <span class="text-secondary text-xs font-weight-bold mx-3">{{$loop->iteration}}</span>
                                 </td>
 
                                 <td class="align-middle ">
-                                    <span class="text-secondary text-xs font-weight-bold">{{$row->created_at}}</span>
+                                    <span class="text-secondary text-xs font-weight-bold">{{ \Carbon\Carbon::parse($row->updated_at ?? $row->created_at)->format('m/d/Y')}}</span>
                                 </td>
 
                                 <td class="align-middle ">
-                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->product_name }}</span>
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->name }}</span>
                                 </td>
 
                                 <td class="align-middle ">
-                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->category_name }}</span>
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->phone }}</span>
                                 </td>
 
                                 <td class="align-middle ">
-                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->brand }}</span>
-                                </td>
-
-                                <td class="align-middle text-center text-sm">
-                                    <span class="badge badge-sm bg-gradient-primary">{{ $row->product_quantity }} </span>
+                                    <span class="text-secondary text-xs font-weight-bold">{{ $row->email }}</span>
                                 </td>
 
                                 @if($row->return_status == "Pending")
@@ -100,9 +102,9 @@ Admin - Purchase Return
 
 
                                 <td class="align-middle">
-                                    <button type="button" class="btn btn-warning  seenBtn" value=" {{$row->id}}">
+                                    <a href="{{ url('purchase_return_seen/'. $row->id ) }}" class="btn btn-warning  seenBtn" value=" {{$row->id}}">
                                         <i class="fas fa-eye"></i> </a>
-                                    </button>
+                                    </a>
 
                                     <a href="{{ url('purchase_return_edit/'. $row->id ) }}" class="btn btn-info">
                                         <i class="fa fa-pencil"></i> </a>
@@ -125,127 +127,11 @@ Admin - Purchase Return
 
 
 
-<!--seen Modal-->
-<div class="modal fade" id="seenModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="
-            true">
-    <div class="modal-dialog " role="document">
-        <div class="modal-content  bg-white">
-            <div class="text-center my-4">
-                <h4 class="modal-title w-100 font-weight-bold text-dark">Purchase Return Details
-                </h4>
-            </div>
-
-            <div class="modal-body mx-3">
-                <div class="row">
-
-                    <div class="col-lg-6 col-md-6 col-12">
-                        <div class="form-group">
-                            <label class="form-control-label text-dark">Product Name:
-                            </label>
-                            <input class="form-control bg-white" id="product_name" style="color: black" type="text" name="product_name" readonly>
-                        </div>
-                    </div>
-
-
-                    <div class="col-lg-6 col-md-6 col-12">
-                        <div class="form-group">
-                            <label class="form-control-label text-dark">Brand:
-                            </label>
-                            <input class="form-control bg-white" id="brand" style="color: black" type="text" name="brand" readonly>
-                        </div>
-                    </div>
-
-
-                    <div class="col-lg-6 col-md-6 col-12">
-                        <div class="form-group">
-                            <label class="form-control-label text-dark">Return Quantity:
-                            </label>
-                            <input class="form-control bg-white" id="product_quantity" style="color: black" type="text" name="product_quantity" readonly>
-                        </div>
-                    </div>
-
-
-                    <div class="col-lg-6 col-md-6 col-12">
-                        <div class="form-group">
-                            <label class="form-control-label text-dark">Return Status:
-                            </label>
-                            <input class="form-control bg-white" id="return_status" style="color: black" type="text" name="return_status" readonly>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-12 col-md-12 col-12">
-                        <div class="form-group">
-                            <label class="form-control-label text-dark">Return Reason:
-                            </label>
-                            <input class="form-control bg-white" id="return_reason" style="color: black" type="text" name="brand" readonly>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-12 col-md-12 col-12">
-                        <div class="form-group">
-                            <label class="form-control-label text-dark">Comment:
-                            </label>
-                            <input class="form-control bg-white" id="comment" style="color: black" type="text" name="brand" readonly>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-6 col-md-6 col-12">
-                        <div class="form-group">
-                            <label class="form-control-label text-dark">Return Time:
-                            </label>
-                            <input class="form-control bg-white" id="created_at" style="color: black" type="text" name="created_at" readonly>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-6 col-md-6 col-12">
-                        <div class="form-group">
-                            <label class="form-control-label text-dark">
-                                Updated Time:</label>
-                            <input class="form-control bg-white" id="updated_at" style="color: black" type="text" name="updated_at" readonly>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
-<!--End seen Modal-->
-
-
 <div>
-    {{ $return_product->links() }}
+    {{ $customer->links() }}
 </div>
 @endsection
 
-<!--seen Modal-->
-<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
-<script>
-    $(document).ready(function() {
-        $(document).on('click', '.seenBtn', function() {
-            var id = $(this).val();
-            //alert(response);
-            $('#seenModal').modal('show');
-
-            $.ajax({
-                type: "GET",
-                url: "/purchase_return_seen/" + id,
-                success: function(response) {
-                    console.log(response.id);
-                    $('#product_name').val(response.product.product_name);
-                    $('#brand').val(response.product.brand);
-                    $('#product_quantity').val(response.product.product_quantity);
-                    $('#return_reason').val(response.product.return_reason);
-                    $('#comment').val(response.product.comment);
-                    $('#return_status').val(response.product.return_status);
-                    $('#created_at').val(response.product.created_at);
-                    $('#updated_at').val(response.product.updated_at);
-                }
-            });
-
-        });
-    });
-</script>
 
 
 {{--page sidebar_for_active--}}

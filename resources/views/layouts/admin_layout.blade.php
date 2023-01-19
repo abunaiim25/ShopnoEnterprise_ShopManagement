@@ -1,5 +1,6 @@
 @php
 $front = App\Models\FrontControl::first();
+$categories = App\Models\Category::get();
 @endphp
 
 <!DOCTYPE html>
@@ -177,7 +178,129 @@ $front = App\Models\FrontControl::first();
     </script>
     <!--End Admin Autocomplite search-->
 
-   
+    <!--Return Purchase Autocomplite search-->
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT
+        2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous">
+    </script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+        var availableTags = [];
+        $.ajax({
+            method: "GET",
+            url: "/purchase_return_autocomplete_search",
+            success: function(response) {
+                startAutoComplete(response);
+            }
+        });
+
+        function startAutoComplete(availableTags) {
+            $("#purchase_return_search").autocomplete({
+                source: availableTags
+            });
+        }
+    </script>
+    <!--End Return Purchase Autocomplite search-->
+
+    <script>
+        $(document).ready(function() {
+
+            //remove form
+            $(document).on('click', '.remove-btn', function() {
+                $(this).closest('.main-form').remove();
+            });
+
+            //add form
+            $(document).on('click', '.add-more-form', function() {
+                //alert('hello')
+                $('.paste-new-forms').append(`
+                 <div class="card mb-4">
+                
+                <div class="main-form card-body px-0 pt-0">
+                    <div class="table-responsive px-4">
+                        <div class="row mt-3">
+                <div>
+                  <button type="button" class="remove-btn btn btn-danger btn-sm float-end">-</button>
+                 </div>
+                                     <div class="col-lg-2 col-md-3 col-4">
+                                <div class="form-group">
+                                    <label>Product Name: </label>
+                                    <input type="text" id="search_purchase_return_name" name="product_name[]" placeholder="Search Product" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-md-3 col-4">
+                                <label>Category:</label>
+                                <div class="form-group">
+                                    <select required class="form-control" name="category_id[]" data-placeholder="Choose Category">
+                                        <option label="Choose category"></option>
+                                        @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->category_name }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-md-3 col-4">
+                                <div class="form-group">
+                                    <label>Brand:</label>
+                                    <input class="form-control" type="text" name="brand[]" placeholder="TP-Link" required>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-md-3 col-4">
+                                <div class="form-group">
+                                    <label>Quantity:</label>
+                                    <input class="form-control" type="number" name="product_quantity[]" placeholder="10" required>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-md-3 col-4">
+                                <div class="form-group">
+                                    <label>Warranty:</label>
+                                    <select class="form-select" name="warranty[]" aria-label="Default select example">
+                                        <option selected>Warranty</option>
+                                        <option value="None Warranty">None Warranty</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-4">
+                                <div class="form-group">
+                                    <label>Warranty Duration:</label>
+                                    <input class="form-control" type="number" name="warranty_duration[]" placeholder="1" required>
+                                </div>
+                            </div>
+
+                             <div class="col-lg-2 col-md-3 col-4">
+                                <div class="form-group">
+                                    <label>Used:</label>
+                                    <input class="form-control" type="number" name="used[]" placeholder="1" required>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-5 col-md-6">
+                                <div class="form-group">
+                                    <label>Return Reason:</label>
+                                    <input class="form-control" type="text" name="return_reason[]" placeholder="Item arrived too late" required>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-5 col-md-6 ">
+                                <div class="form-group">
+                                    <label>Comment/Required:</label>
+                                    <input class="form-control" type="text" name="comment[]" placeholder="Not required any more" required>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>`);
+            });
+        })
+    </script>
 </body>
 
 </html>

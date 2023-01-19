@@ -68,14 +68,14 @@ class InvoiceBillController extends Controller
             'warranty' => 'integer',
         ]);
 
-            ProductInvoice::insert([
-                'product_desc' => $request->product_desc,
-                'warranty' => $request->warranty,
-                'qty' => $request->qty,
-                'price' => $request->price,
-                'user_ip' => request()->ip(),
-            ]);
-       
+        ProductInvoice::insert([
+            'product_desc' => $request->product_desc,
+            'warranty' => $request->warranty,
+            'qty' => $request->qty,
+            'price' => $request->price,
+            'user_ip' => request()->ip(),
+        ]);
+
         return Redirect()->back()->with('status_swal', 'Product Added');
     }
     //======================admin_product_invoice_delete======================

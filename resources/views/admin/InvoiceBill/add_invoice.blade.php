@@ -94,7 +94,7 @@ Admin - Add Invoice
                                         <input name="product_desc" type=" text" class="form-control" placeholder="Router Tp-Link" value="{{ $row->product_desc }}" readonly>
                                     </td>
                                     <td>
-                                        <input name="warranty" type="text" class="form-control" placeholder="1" value="{{ $row->warranty }} year" readonly>
+                                        <input name="warranty" type="text" class="form-control" placeholder="1" value="{{ $row->warranty }}" readonly>
                                     </td>
                                     <td>
                                         <input name="price" type="text" class="form-control" placeholder="1000" value="{{ $row->price }} TK" readonly>
