@@ -1,6 +1,7 @@
 @php
 $front = App\Models\FrontControl::first();
 $categories = App\Models\Category::get();
+$product_stock = App\Models\ShopStock::select('product_name')->where('status', '1')->where('product_quantity', '>', 0)->get();
 @endphp
 
 <!DOCTYPE html>
@@ -72,10 +73,22 @@ $categories = App\Models\Category::get();
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="{{ asset('admin') }}/assets/js/soft-ui-dashboard.min.js?v=1.0.7"></script>
 
+    <!-select with search-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <script>
+    $("#product_desc_select").select2({
+        placeholder: "Search Product",
+            allowClear: true
+    });
+   </script>
+
+
 
     @include('layouts.admin_inc.js')
 
-
+{{-- 
     <!--Product Autocomplite search-->
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT
         2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous">
@@ -100,6 +113,7 @@ $categories = App\Models\Category::get();
         }
     </script>
     <!--End Product Autocomplite search-->
+ --}}
 
     <!--invoice Autocomplite search-->
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT
@@ -155,8 +169,7 @@ $categories = App\Models\Category::get();
 
     <!--Admin Autocomplite search-->
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT
-        2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous">
-    </script>
+        2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"> </script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="/resources/demos/style.css">
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
@@ -178,6 +191,7 @@ $categories = App\Models\Category::get();
     </script>
     <!--End Admin Autocomplite search-->
 
+ 
     <!--Return Purchase Autocomplite search-->
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT
         2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous">
@@ -203,104 +217,71 @@ $categories = App\Models\Category::get();
     </script>
     <!--End Return Purchase Autocomplite search-->
 
-    <script>
-        $(document).ready(function() {
 
-            //remove form
-            $(document).on('click', '.remove-btn', function() {
-                $(this).closest('.main-form').remove();
-            });
+<!--form multiple-->
 
-            //add form
-            $(document).on('click', '.add-more-form', function() {
-                //alert('hello')
-                $('.paste-new-forms').append(`
-                 <div class="card mb-4">
-                
-                <div class="main-form card-body px-0 pt-0">
-                    <div class="table-responsive px-4">
-                        <div class="row mt-3">
-                <div>
-                  <button type="button" class="remove-btn btn btn-danger btn-sm float-end">-</button>
-                 </div>
-                                     <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Product Name: </label>
-                                    <input type="text" id="search_purchase_return_name" name="product_name[]" placeholder="Search Product" class="form-control" />
+<script>
+    $(document).ready(function() {
+
+        //remove form
+        $(document).on('click', '.remove-btn', function() {
+            $(this).closest('.main-form').remove();
+        });
+
+        //add form
+        $(document).on('click', '.add-more-form', function() {
+            //alert('hello')
+            $('.paste-new-forms2').append(`
+        
+            <div class="main-form card-body px-0 pt-0">
+                        <div class="table-responsive px-4">
+                            <div class="row ">
+                                <div class="col-lg-3 col-md-3 col-4">
+                                    <div class="form-group">
+                                        <select id="product_desc_select" type="text" name="product_desc"
+                                            class="form-select form-select-lg" aria-label="Default select example">
+                                            <option></option>
+                                            @foreach ($product_stock as $row)
+                                                <option>{{ $row->product_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-2 col-md-2 col-2">
+                                    <div class="form-group">
+                                        <input class="form-control" type="text" name="warranty[]" placeholder="2"
+                                            required>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-2 col-md-2 col-2">
+                                    <div class="form-group">
+                                        <input class="form-control" type="text" name="price[]" placeholder="1000"
+                                            required>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-2 col-md-2 col-2">
+                                    <div class="form-group">
+                                        <input class="form-control" type="text" name="qty[]" placeholder="2"
+                                            required>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-2 col-md-2 col-2">
+                                    <div>
+                                      <button type="button" class="remove-btn btn btn-danger btn-sm ">-</button>
+                                   </div>
                                 </div>
                             </div>
-
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <label>Category:</label>
-                                <div class="form-group">
-                                    <select required class="form-control" name="category_id[]" data-placeholder="Choose Category">
-                                        <option label="Choose category"></option>
-                                        @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->category_name }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Brand:</label>
-                                    <input class="form-control" type="text" name="brand[]" placeholder="TP-Link" required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Quantity:</label>
-                                    <input class="form-control" type="number" name="product_quantity[]" placeholder="10" required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Warranty:</label>
-                                    <select class="form-select" name="warranty[]" aria-label="Default select example">
-                                        <option selected>Warranty</option>
-                                        <option value="None Warranty">None Warranty</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Warranty Duration:</label>
-                                    <input class="form-control" type="number" name="warranty_duration[]" placeholder="1" required>
-                                </div>
-                            </div>
-
-                             <div class="col-lg-2 col-md-3 col-4">
-                                <div class="form-group">
-                                    <label>Used:</label>
-                                    <input class="form-control" type="number" name="used[]" placeholder="1" required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-5 col-md-6">
-                                <div class="form-group">
-                                    <label>Return Reason:</label>
-                                    <input class="form-control" type="text" name="return_reason[]" placeholder="Item arrived too late" required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-5 col-md-6 ">
-                                <div class="form-group">
-                                    <label>Comment/Required:</label>
-                                    <input class="form-control" type="text" name="comment[]" placeholder="Not required any more" required>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
-                </div>
-            </div>`);
-            });
-        })
-    </script>
+         `);
+        });
+    })
+</script>
+
 </body>
 
 </html>

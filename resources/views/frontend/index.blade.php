@@ -18,7 +18,6 @@ $front = App\Models\FrontControl::first();
     </div>
 </section>
 
-
 <section class=" mb-5 py-5">
     <div class="w-50 mx-auto">
         <h2 class="font-weight-bold text-center">Contact Us</h2>

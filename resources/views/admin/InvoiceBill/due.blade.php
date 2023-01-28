@@ -1,8 +1,7 @@
 @extends('layouts.admin_layout')
 
-
 @section('title')
-    Admin - Add Invoice
+    Admin - Invoice
 @endsection
 
 {{-- page nav --}}
@@ -19,347 +18,271 @@
 {{-- search nav --}}
 @section('search_nav')
     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+        <form action="{{ url('invoice_search_payment_due') }}" method="GET" class="search">
+            {{ csrf_field() }}
+            <div class="input-group">
+                <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                <input name="search" id="invoice_search" type="text" class="form-control"
+                    placeholder="Bill Payment Search">
+            </div>
+        </form>
     </div>
 @endsection
 
 
 @section('admin_content')
     <div class="row">
+
         <div class="col-md-12">
             <div class="card mb-4">
                 <div class="card-header pb-0">
-                    <div style="display: flex; justify-content: space-between;" class="">
-                        <h6>Add Product</h6>
-
-                        
-                            <button type="button" class="btn btn-warning btn-rounded" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal">
-                                <i class="fas fa-eye"></i> Stock Remaining
-                            </button>
+                    <div style="display: flex; justify-content: space-between;" class="mb-2">
+                        <h6>Payment Status</h6>
                     </div>
+
+
                 </div>
 
-                <div class="card-body px-0 pt-0 pb-0 px-2">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="admin_payment_status">Bill Due List</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin_payment_status_paid">Bill Paid List</a>
+                    </li>
+                </ul>
+
+
+
+                <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
-                        <form action="{{ url('product_invoice_store') }}" method="POST">
-                            @csrf
-                            <div class="row mx-2">
-                                <div class="col-lg-3 col-md-3 col-4">
-                                    <label>Product Name: </label>
-                                    <div class="form-group">
-                                        <select id="" type="text" name="product_desc"
-                                            class="form-select form-select" aria-label="Default select example">
-                                            <option></option>
-                                            @foreach ($product_stock as $row)
-                                                <option>{{ $row->product_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
 
-                                <div class="col-lg-2 col-md-2 col-2">
-                                    <div class="form-group">
-                                        <label>Warranty:</label>
-                                        <input class="form-control" type="text" name="warranty" placeholder="2" required>
-                                    </div>
-                                </div>
+                        @if ($invoice_bill->count() > 0)
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Sl
+                                        </th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Date (mm/dd/yyyy)</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Invoice No.</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Customer Name</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Number</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Selling Amount</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Payment Type</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Payment</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Add Payment</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Action</th>
 
-                                <div class="col-lg-2 col-md-2 col-2">
-                                    <div class="form-group">
-                                        <label>Price:</label>
-                                        <input class="form-control" type="text" name="price" placeholder="1000"
-                                            required>
-                                    </div>
-                                </div>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                                <div class="col-lg-2 col-md-2 col-2">
-                                    <div class="form-group">
-                                        <label>Quantity:</label>
-                                        <input class="form-control" type="text" name="qty" placeholder="2" required>
-                                    </div>
-                                </div>
+                                    @foreach ($invoice_bill as $item)
+                                        <tr>
+                                            <td class="align-middle ">
+                                                <span
+                                                    class="text-secondary text-xs font-weight-bold mx-3">{{ $loop->iteration }}</span>
+                                            </td>
 
-                                <div class="col-lg-2 col-md-2 col-2">
-                                    <div class="form-group">
-                                        <label>Add/Delete</label>
-                                        <br>
-                                        <button class=" btn btn-success"> +Add </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+                                            <td class="align-middle ">
+                                                <span
+                                                    class="text-secondary text-xs font-weight-bold">{{ \Carbon\Carbon::parse($item->date)->format('m/d/Y') }}</span>
+                                            </td>
+
+                                            <td class="align-middle ">
+                                                <span
+                                                    class="text-secondary text-xs font-weight-bold">{{ $item->invoice_no ?? 0 }}</span>
+                                            </td>
+
+                                            <td class="align-middle ">
+                                                <span
+                                                    class="text-secondary text-xs font-weight-bold">{{ $item->name }}</span>
+                                            </td>
+
+                                            <td class="align-middle ">
+                                                <span
+                                                    class="text-secondary text-xs font-weight-bold">{{ $item->phone }}</span>
+                                            </td>
+
+                                            <td class="align-middle">
+                                                <span
+                                                    class="text-secondary text-xs font-weight-bold">{{ $item->subtotal ?? 0 }}TK</span>
+                                            </td>
+
+                                            <td class="align-middle ">
+                                                <span
+                                                    class="text-secondary text-xs font-weight-bold">{{ $item->payment_type }}</span>
+                                            </td>
+
+                                            @if ($item->payment_status == 'Due')
+                                                <td class="align-middle  text-sm">
+                                                    <span class="badge badge-sm bg-gradient-danger">Due</span>
+                                                </td>
+                                            @else
+                                                <td class="align-middle  text-sm">
+                                                    <span class="badge badge-sm bg-gradient-success">Paid</span>
+                                                </td>
+                                            @endif
+
+                                            <td class="align-middle ">
+                                                <button type="button" class="btn btn-success addPaymentBtn"
+                                                    value=" {{ $item->id }}">+Add Due</button>
+                                            </td>
+
+                                            <td class="align-middle">
+                                                <a href="{{ url('admin_seen_invoicebill/' . $item->id) }}"
+                                                    class="btn btn-warning">
+                                                    <i class="fas fa-eye"></i> </a>
+                                                <!-- <a href="{{ url('admin_place_order_invoice_edit/' . $item->id) }}"
+                                                                class="btn btn-sm btn-info">
+                                                                <i class="fa fa-pencil"></i> </a>
+                                                            -->
+                                                <a href="{{ url('place_order_invoice_delete/' . $item->id) }}"
+                                                    class="btn  btn-danger"
+                                                    onclick="return confirm('Are You Sure To Delete?')"><i
+                                                        class="fa fa-trash"></i> </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <h2 class="text-center p-5">Invoice Bill Not Available</h2>
+                        @endif
                     </div>
                 </div>
 
 
-                <form action="{{ url('place_order_invoice') }}" method="POST">
-                    @csrf
-                    <div class="card-body px-0 pt-0 pb-2 mx-2">
-                        <div class="table-responsive p-0">
-                            @if ($product_invoice->count() > 0)
-                                @foreach ($product_invoice as $row)
-                                    <div class="row mx-2">
-                                        <div class="col-lg-3 col-md-3 col-2">
-                                            <div class="form-group">
-                                                <input class="form-control" type="text" value="{{ $row->product_desc }}"
-                                                    name="product_desc" placeholder="tp link" required>
-                                            </div>
-                                        </div>
 
-                                        <div class="col-lg-2 col-md-2 col-2">
-                                            <div class="form-group">
-                                                <input class="form-control" type="text" value="{{ $row->warranty }}"
-                                                    name="warranty" placeholder="2" required>
-                                            </div>
+                <div class="row mt-4 mx-2 mb-2">
+                    <div class="col-lg-12 mb-lg-0 mb-4">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="d-flex flex-column h-100">
+                                            <p class="mb-1 pt-2 text-bold">Total Due List Amount</p>
+                                            <h2 class="font-weight-bolder">{{ $subtotal }} TK</h5>
+                                                <p class="mb-5">
+                                                <h6 class="text-muted font-weight-normal">By {{ $bill_count }} Invoice
+                                                    Bill.</h6>
                                         </div>
-
-                                        <div class="col-lg-2 col-md-2 col-2">
-                                            <div class="form-group">
-                                                <input class="form-control" type="text" value="{{ $row->price }}"
-                                                    name="price" placeholder="1000" required>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-2 col-md-2 col-2">
-                                            <div class="form-group">
-                                                <input class="form-control" type="text" value="{{ $row->qty }}"
-                                                    name="qty" placeholder="2" required>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-2 col-md-2 col-2">
-                                            <a href="{{ url('admin_product_invoice_delete/' . $row->id) }}"
-                                                class="btn btn-sm btn-danger text-center"
-                                                onclick="return confirm('Are You Sure To Delete?')">
-                                                <i class="fa-solid fa-xmark"></i> Del</a>
-                                        </div>
-                                       
                                     </div>
-                                @endforeach
-
-                                <h1 class="badge bg-gradient-success mx-3">Total: {{ $subtotal }} TK</h1>
-                            @else
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="card-body px-0 pt-0 pb-2 mx-2">
-                        <div class="table-responsive p-0">
-                            <div class="card-header pb-0">
-                                <h6>Customer Information & Data</h6>
-                            </div>
-                        </div>
-
-                        <div class="row  mx-2">
-                            <div class="col-lg-3 col-md-6 col-6">
-                                <div class="form-group">
-                                    <label>Date:</label>
-                                    <input class="form-control" placeholder="date" type="date" name="date" required>
-                                </div>
-
-                            </div>
-
-                            <div class="col-lg-3 col-md-6 col-6">
-                                <div class="form-group">
-                                    <label>Name:</label>
-                                    <input class="form-control" type="text" name="name" placeholder="Naiim"
-                                        required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3 col-md-6 col-6">
-                                <div class="form-group">
-                                    <label>Person:</label>
-                                    <input class="form-control" type="text" name="person" placeholder="Rayhan"
-                                        required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3 col-md-6 col-6">
-                                <div class="form-group">
-                                    <label>Number:</label>
-                                    <input class="form-control" type="text" name="phone" placeholder="01xxxxxxxxx"
-                                        required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3 col-md-6 col-6">
-                                <div class="form-group">
-                                    <label>Email:</label>
-                                    <input class="form-control" type="text" name="email"
-                                        placeholder="email@gmail.com" required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3 col-md-6 col-6">
-                                <div class="form-group">
-                                    <label>Address:</label>
-                                    <input class="form-control" type="text" name="address"
-                                        placeholder="Dhaka, Bangladesh" required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3 col-md-6 col-6">
-                                <div class="form-group">
-                                    <label>Ref By:</label>
-                                    <input class="form-control" type="text" name="ref_by" placeholder="Saddam"
-                                        required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3 col-md-6 col-6">
-                                <div class="form-group">
-                                    <label>Sold By:</label>
-                                    <input class="form-control" mtype="text" name="sold_by" placeholder="Srower"
-                                        required>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-
-                    <div class="card-body px-0 pt-0 pb-2 mx-2">
-                        <div class="table-responsive p-0">
-                            <div class="card-header pb-0">
-                                <h6>Accounting</h6>
-                            </div>
-                        </div>
-
-                        <div class="row mx-2">
-                            <div class="col-lg-2 col-md-2 col-6">
-                                <div class="form-group">
-                                    <label>Previous Due:</label>
-                                    <input class="form-control" type="text" name="previous_due" placeholder="0" value="0"
-                                        required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2 col-md-2 col-6">
-                                <div class="form-group">
-                                    <label>Selling Amount:</label>
-                                    <input class="form-control" type="text" name="subtotal"
-                                        placeholder="selling amount" value="{{ $subtotal }}" readonly>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-2 col-6">
-                                <div class="form-group">
-                                    <label>Collecton:</label>
-                                    <input class="form-control" type="text" name="collecton" placeholder="0"
-                                        required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3 col-md-3 col-6">
-                                <div class="form-group">
-                                    <label>Payment Type:</label>
-                                    <select class="form-select" name="payment_type" aria-label="Default select example">
-                                        <option></option>
-                                        <option value="Handcash">Handcash Payment</option>
-                                        <option value="Online">Online Payment</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3 col-md-3 col-6">
-                                <div class="form-group">
-                                    <label>Payment Status:</label>
-                                    <select class="form-select" name="payment_status" aria-label="Default select example" required>
-                                        <option></option>
-                                        <option value="Paid">Fully Paid Payment</option>
-                                        <option value="Due">Due Payment</option>
-                                    </select>
+                                    <div class="col-lg-6 ms-auto text-center mt-5 mt-lg-0">
+                                        <div class="bg-gradient-primary border-radius-lg h-100">
+                                            <img src="{{ asset('admin') }}/assets/img/card.jpg"
+                                                class="position-absolute h-100 w-50 top-0 d-lg-block d-none" alt="waves">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <button type="submit" class="btn bg-gradient-info w-100 mt-3">Bill</button>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 
 
-    <!--Create Modal-->
-    <form action="customer_ledger_store" method="POST">
+
+    <div>
+        {{ $invoice_bill->links() }}
+    </div>
+
+
+    <!--Add Quantity product Modal Modal-->
+    <form action="{{ url('due_payment_update') }}" method="POST">
         @csrf
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        @method('POST')
+
+        <div class="modal fade" id="addPaymentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
             aria-hidden="true">
             <div class="modal-dialog " role="document">
                 <div class="modal-content  bg-white">
-
-                    <div style="display: flex; justify-content: space-between;" class="mx-4 mt-4">
-                        <h6>Stock Remaining</h6>
-
-                        <a href="{{ url('/admin_shop_stock') }}" target="_blank"
-                            class=" btn btn-sm btn-warning btn-rounded">Go Shop Stock</a>
+                    <div class="text-center my-4">
+                        <h4 class="modal-title w-100 font-weight-bold text-dark">Add Due Payment
+                        </h4>
                     </div>
 
-
                     <div class="modal-body mx-3">
-                        <div class="card-body px-0 pt-0 pb-2">
-                            <div class="table-responsive p-0">
-                                @if ($stock->count() > 0)
-                                    <table class="table align-items-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    Sl</th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Product Name</th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    Quantity</th>
-                                            </tr>
-                                        </thead>
+                        <div class="row">
 
-                                        <tbody>
-                                            @foreach ($stock as $row)
-                                                <tr>
-                                                    <td class="align-middle ">
-                                                        <span
-                                                            class="text-secondary text-xs font-weight-bold mx-3">{{ $loop->iteration }}</span>
-                                                    </td>
+                            <input type="hidden" id="id" name="id">
+                            <input type="hidden" id="net_oustanding" name="net_oustanding">
+                            <input type="hidden" id="collecton_previous" name="collecton_previous" >
 
-                                                    <td class="align-middle ">
-                                                        <span
-                                                            class="text-secondary text-xs font-weight-bold">{{ $row->product_name }}</span>
-                                                    </td>
+                            <div class="col-lg-6 col-md-6 col-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Payment Amunt: </label>
+                                    <input class="form-control" id="" type="number" name="collecton" placeholder="500" required> 
+                                </div>
+                            </div>
 
-                                                    @if ($row->product_quantity > 0)
-                                                        <td class="align-middle text-center text-sm">
-                                                            <span
-                                                                class="badge badge-sm bg-gradient-success">{{ $row->product_quantity }}
-                                                                In Shop Stock</span>
-                                                        </td>
-                                                    @else
-                                                        <td class="align-middle text-center text-sm">
-                                                            <span
-                                                                class="badge badge-sm bg-gradient-secondary">{{ $row->product_quantity }}
-                                                                Out Of Shop Stock</span>
-                                                        </td>
-                                                    @endif
-
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                @else
-                                    <h2 class="text-center p-5">Purchase Return Not Available</h2>
-                                @endif
+                            <div class="col-lg-6 col-md-6 col-6">
+                                <div class="form-group">
+                                    <label>Payment Status:</label>
+                                    <select class="form-select" name="payment_status"aria-label="Default select example" required>                                       
+                                        <option></option>
+                                        <option value="Paid">Fully Paid Payment</option>
+                                        <option value="Due">Yet Due Payment</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
                     </div>
+                    <div class="d-flex justify-content-center mb-4">
+                        <button class="btn btn-success">Add</button>
+                    </div>
+
                 </div>
             </div>
         </div>
     </form>
-    <!--End Create Modal-->
+    <!--End Add Quantity product Modal Modal-->
 @endsection
+
+
+<!--Add Quantity product Modal-->
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        $(document).on('click', '.addPaymentBtn', function() {
+            var id = $(this).val();
+            //alert(response);
+            $('#addPaymentModal').modal('show');
+
+            $.ajax({
+                type: "GET",
+                url: "/add_due_payment/" + id,
+                success: function(response) {
+                    $('#id').val(response.bill.id);
+                    $('#net_oustanding').val(response.bill.net_oustanding);
+                    $('#collecton_previous').val(response.bill.collecton);
+                }
+
+            });
+        });
+    });
+</script>
 
 
 {{-- page sidebar_for_active --}}
@@ -450,6 +373,8 @@
                 <span class="nav-link-text ms-1">Purchase Return</span>
             </a>
         </li>
+
+
 
         <li class="nav-item {{ Request::is('admin_category') ? 'active' : '' }}">
             <a class="nav-link" href="{{ url('admin_category') }}">

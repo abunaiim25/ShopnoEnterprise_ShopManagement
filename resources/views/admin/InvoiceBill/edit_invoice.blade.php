@@ -52,7 +52,7 @@
                                             <tr>
 
                                                 <input name="prodId[]" type="hidden" class="form_control"
-                                                    placeholder="Router Tp-Link" value="{{ $row->id }}" required>
+                                                   value="{{ $row->id }}" required>
 
                                                 <td>
                                                     <input name="product_desc[]" type=" text" class="form_control"

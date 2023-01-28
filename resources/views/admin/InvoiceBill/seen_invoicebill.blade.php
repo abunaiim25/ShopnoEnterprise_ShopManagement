@@ -120,13 +120,14 @@
                     <td>{{$invoice->subtotal}} TK</td>
                 </tr>
                 <tr>
-                    <th>Collecton</th>
+                    <th>Collecton / Paid</th>
                     <td>{{$invoice->collecton}} TK</td>
                 </tr>
                 <tr>
-                    <th>Net Oustanding</th>
-                    <td>{{$invoice->previous_due + $invoice->subtotal - $invoice->collecton}} TK</td>
+                    <th>Net Oustanding / Due</th>
+                    <td>{{$invoice->net_oustanding}} TK</td> 
                 </tr>
+                
             </table>
         </article>
 

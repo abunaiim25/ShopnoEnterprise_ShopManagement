@@ -35,7 +35,6 @@ Admin - Purchase Return
     <div class="col-md-12">
         <div class="card mb-4">
             <div class="card-header pb-0">
-
                 <div style="display: flex; justify-content: space-between;" class="mb-2">
                     <h6>Purchase Return List</h6>
                     <a href="{{url('/add_purchase_return_page')}}" class=" btn btn-info btn-rounded">+ Purchase Return</a>
@@ -62,7 +61,7 @@ Admin - Purchase Return
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Name</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Phone</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Return Status</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Return Status</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
                             </tr>
                         </thead>
@@ -91,11 +90,11 @@ Admin - Purchase Return
                                 </td>
 
                                 @if($row->return_status == "Pending")
-                                <td class="align-middle text-center text-sm">
+                                <td class="align-middle text-sm">
                                     <a class="btn btn-sm bg-gradient-secondary" href="{{ url('purchase_return_done', $row->id) }}" onclick="return confirm('Are You Sure To Done?')"> Pending <i class="fas fa-thumbs-up"></i></a>
                                 </td>
                                 @else
-                                <td class="align-middle text-center text-sm">
+                                <td class="align-middle  text-sm">
                                     <span class="badge badge-sm bg-gradient-success">Done</span>
                                 </td>
                                 @endif

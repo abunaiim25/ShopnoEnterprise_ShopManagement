@@ -79,7 +79,14 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('invoice_search', [InvoiceBillController::class, 'invoice_search']);
     Route::get('/invoice_autocomplete_search', [InvoiceBillController::class, 'invoice_autocomplete_search_ajax']);
     Route::post('date_from_to_search', [InvoiceBillController::class, 'date_from_to_search']);
+    Route::get('admin_payment_status', [InvoiceBillController::class, 'admin_payment_status']);
+    Route::get('admin_payment_status_paid', [InvoiceBillController::class, 'admin_payment_status_paid']);
+    Route::get('invoice_search_payment_due', [InvoiceBillController::class, 'invoice_search_payment_due']);
+    Route::get('invoice_search_payment_paid', [InvoiceBillController::class, 'invoice_search_payment_paid']);
+    Route::get('add_due_payment/{id}', [InvoiceBillController::class, 'add_due_payment']);
+    Route::post('due_payment_update', [InvoiceBillController::class, 'due_payment_update']);
 
+    
     //==================================CombinedLedger==============================
     Route::get('admin_combined_ledger', [CombinedLedgerController::class, 'index']);
     Route::post('customer_ledger_store', [CombinedLedgerController::class, 'customer_ledger_store']);

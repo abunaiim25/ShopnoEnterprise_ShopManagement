@@ -1,7 +1,7 @@
 @extends('layouts.admin_layout')
 
 @section('title')
-    Admin - Purchase Return
+    Admin - Invoice
 @endsection
 
 {{-- page nav --}}
@@ -9,15 +9,23 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
             <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
-            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Purchase Return</li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Invoice Bill</li>
         </ol>
-        <h6 class="font-weight-bolder mb-0">Purchase Return</h6>
+        <h6 class="font-weight-bolder mb-0">Invoice Bill</h6>
     </nav>
 @endsection
 
 {{-- search nav --}}
 @section('search_nav')
     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+        <form action="{{ url('invoice_search_payment_paid') }}" method="GET" class="search">
+            {{ csrf_field() }}
+            <div class="input-group">
+                <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                <input name="search" id="invoice_search" type="text" class="form-control"
+                    placeholder="Bill Payment Search">
+            </div>
+        </form>
     </div>
 @endsection
 
@@ -26,279 +34,150 @@
     <div class="row">
 
         <div class="col-md-12">
-
-            <form action="{{ url('store_purchase_return') }}" method="POST">
-                @csrf
-
-                <div class="card mb-4">
-                    <div class="card-header pb-0">
-                        <div style="display: flex; justify-content: space-between;">
-                            <h6>Customer Information</h6>
-                        </div>
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <div style="display: flex; justify-content: space-between;" class="mb-2">
+                        <h6>Payment Status</h6>
                     </div>
 
-                    <div class="card-body px-0 pt-0 pb-2">
-                        <div class="table-responsive px-4">
-                            <div class="row mt-3">
-                                <div class="col-lg-4 col-md-6">
-                                    <div class="form-group">
-                                        <label>Customer Name: </label>
-                                        <input class="form-control" type="text" name="name" placeholder="Abu Naiim"
-                                            required>
-                                    </div>
-                                </div>
+                  
+                </div>
 
-                                <div class="col-lg-4 col-md-6">
-                                    <div class="form-group">
-                                        <label>Number: </label>
-                                        <input class="form-control" type="text" name="phone" placeholder="01xxxxxxxxx"
-                                            required>
-                                    </div>
-                                </div>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin_payment_status">Bill Due List</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="admin_payment_status_paid">Bill Paid List</a>
+                    </li>
+                </ul>
 
-                                <div class="col-lg-4 col-md-6">
-                                    <div class="form-group">
-                                        <label>Email: </label>
-                                        <input class="form-control" type="text" name="email"
-                                            placeholder="email@gmail.com" required>
+
+
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+
+                        @if ($invoice_bill->count() > 0)
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Sl</th>                                       
+                                        <th  class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date (mm/dd/yyyy)</th>   
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Invoice No.</th>   
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Customer Name</th> 
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Number</th> 
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Selling Amount</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Payment Type</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Payment</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"> Action</th>
+                                           
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach ($invoice_bill as $item)
+                                        <tr>
+                                            <td class="align-middle ">
+                                                <span
+                                                    class="text-secondary text-xs font-weight-bold mx-3">{{ $loop->iteration }}</span>
+                                            </td>
+
+                                            <td class="align-middle ">
+                                                <span class="text-secondary text-xs font-weight-bold">{{ \Carbon\Carbon::parse($item->date)->format('m/d/Y') }}</span>    
+                                            </td>
+
+                                            <td class="align-middle ">
+                                                <span  class="text-secondary text-xs font-weight-bold">{{ $item->invoice_no ?? 0 }}</span> 
+                                            </td>
+
+                                            <td class="align-middle ">
+                                                <span class="text-secondary text-xs font-weight-bold">{{ $item->name }}</span>   
+                                            </td>
+
+                                            <td class="align-middle ">
+                                                <span class="text-secondary text-xs font-weight-bold">{{ $item->phone }}</span>    
+                                            </td>
+
+                                            <td class="align-middle">
+                                                <span  class="text-secondary text-xs font-weight-bold">{{ $item->subtotal ?? 0 }}TK</span>
+                                             </td>
+
+                                             <td class="align-middle ">
+                                                <span class="text-secondary text-xs font-weight-bold">{{ $item->payment_type }}</span>    
+                                            </td>
+
+                                            @if($item->payment_status == "Due")
+                                            <td class="align-middle  text-sm">
+                                                <span class="badge badge-sm bg-gradient-danger">Due</span>
+                                            </td>
+                                            @else
+                                            <td class="align-middle  text-sm">
+                                                <span class="badge badge-sm bg-gradient-success">Paid</span>
+                                            </td>
+                                            @endif
+
+                                            <td class="align-middle">
+                                                <a href="{{ url('admin_seen_invoicebill/' . $item->id) }}"
+                                                    class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-eye"></i> </a>
+                                                <!-- <a href="{{ url('admin_place_order_invoice_edit/' . $item->id) }}"
+                                                    class="btn btn-sm btn-info">
+                                                    <i class="fa fa-pencil"></i> </a>
+                                                -->
+                                                <a href="{{ url('place_order_invoice_delete/' . $item->id) }}"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Are You Sure To Delete?')"><i
+                                                        class="fa fa-trash"></i> </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <h2 class="text-center p-5">Invoice Bill Not Available</h2>
+                        @endif
+                    </div>
+                </div>
+
+
+
+                <div class="row mt-4 mx-2 mb-2">
+                    <div class="col-lg-12 mb-lg-0 mb-4">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="d-flex flex-column h-100">
+                                            <p class="mb-1 pt-2 text-bold">Paid List Amount</p>
+                                            <h2 class="font-weight-bolder">{{ $subtotal }} TK</h5>
+                                                <p class="mb-5">
+                                                <h6 class="text-muted font-weight-normal">By {{ $bill_count }} Invoice
+                                                    Bill.</h6>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 ms-auto text-center mt-5 mt-lg-0">
+                                        <div class="bg-gradient-primary border-radius-lg h-100">
+                                            <img src="{{ asset('admin') }}/assets/img/card.jpg"
+                                                class="position-absolute h-100 w-50 top-0 d-lg-block d-none"
+                                                alt="waves">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-
-                <div class="card mb-4">
-                    <div class="card-header pb-0">
-                        <div style="display: flex; justify-content: space-between;">
-                            <h6>Product Information</h6>
-                            <a href="javascript:void(0)" class="add-more-form btn btn-success btn-sm">+</a>
-                        </div>
-                    </div>
-
-                    <div class="card-body px-0 pt-0">
-                        <div class="table-responsive px-4">
-                            <div class="row mt-3">
-
-                                <div class="col-lg-2 col-md-3 col-4">
-                                    <label>Product Name: </label>
-                                    <div class="form-group">
-                                        <select id="" type="text" name="product_name[]"
-                                            class="form-select form-select" aria-label="Default select example">
-                                            <option></option>
-                                            @foreach ($stock as $row)
-                                                <option>{{ $row->product_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-2 col-md-3 col-4">
-                                    <label>Category:</label>
-                                    <div class="form-group">
-                                        <select required class="form-control" name="category_id[]" required
-                                            data-placeholder="Choose Category">
-                                            <option label="Choose category"></option>
-                                            @foreach ($categories as $category)
-                                                <option value="{{ $category->id }}">{{ $category->category_name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-2 col-md-3 col-4">
-                                    <div class="form-group">
-                                        <label>Brand:</label>
-                                        <input class="form-control" type="text" name="brand[]" placeholder="TP-Link"
-                                            required>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-2 col-md-3 col-4">
-                                    <div class="form-group">
-                                        <label>Quantity:</label>
-                                        <input class="form-control" type="number" name="product_quantity[]"
-                                            placeholder="10" required>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-2 col-md-3 col-4">
-                                    <div class="form-group">
-                                        <label>Warranty:</label>
-                                        <select class="form-select" name="warranty[]" aria-label="Default select example" required>
-                                            <option selected>Warranty</option>
-                                            <option value="None Warranty">None Warranty</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-md-3 col-4">
-                                    <div class="form-group">
-                                        <label>Warranty Duration:</label>
-                                        <input class="form-control" type="number" name="warranty_duration[]"
-                                            placeholder="2" required>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-md-3 col-4">
-                                    <div class="form-group">
-                                        <label>Used(month/year):</label>
-                                        <input class="form-control" type="number" name="used[]" placeholder="1" required>
-                                    </div>
-                                </div>
-                                <div class="col-lg-5 col-md-6">
-                                    <div class="form-group">
-                                        <label>Return Reason:</label>
-                                        <input class="form-control" type="text" name="return_reason[]"
-                                            placeholder="Item arrived too late" required>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-5 col-md-6 ">
-                                    <div class="form-group">
-                                        <label>Comment/Required:</label>
-                                        <input class="form-control" type="text" name="comment[]"
-                                            placeholder="Not required any more" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="paste-new-forms"></div>
-
-                <button type="submit" class="btn bg-gradient-info w-100 mb-0">Add</button>
-            </form>
-        </div>
-    </div>
-
-
-
-    
-    <!--select search-->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-    <script>
-        $("#search_purchase_return_name").select2({
-            placeholder: "Search Product",
-            allowClear: true
-        });
-    </script>
-
-
-    <script>
-        $(document).ready(function() {
-
-            //remove form
-            $(document).on('click', '.remove-btn', function() {
-                $(this).closest('.main-form').remove();
-            });
-
-            //add form
-            $(document).on('click', '.add-more-form', function() {
-                //alert('hello')
-                $('.paste-new-forms').append(`
-                <div class="card mb-4">
-        <div class="main-form card-body px-0 pt-0">
-            <div class="table-responsive px-4">
-                <div class="row mt-3">
-                    <div>
-                        <button type="button" class="remove-btn btn btn-danger btn-sm float-end">-</button>
-                    </div>
-                    <div class="col-lg-2 col-md-3 col-4">
-                        <label>Product Name: </label>
-                        <div class="form-group">
-                            <select id="" type="text" name="product_name[]"
-                                class="form-select form-select" aria-label="Default select example">
-                                <option></option>
-                                @foreach ($stock as $row)
-                                    <option>{{ $row->product_name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-2 col-md-3 col-4">
-                        <label>Category:</label>
-                        <div class="form-group">
-                            <select required class="form-control" name="category_id[]"
-                                data-placeholder="Choose Category">
-                                <option label="Choose category"></option>
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->category_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-2 col-md-3 col-4">
-                        <div class="form-group">
-                            <label>Brand:</label>
-                            <input class="form-control" type="text" name="brand[]" placeholder="TP-Link" required>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-2 col-md-3 col-4">
-                        <div class="form-group">
-                            <label>Quantity:</label>
-                            <input class="form-control" type="number" name="product_quantity[]" placeholder="10"
-                                required>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-2 col-md-3 col-4">
-                        <div class="form-group">
-                            <label>Warranty:</label>
-                            <select class="form-select" name="warranty[]" aria-label="Default select example">
-                                <option selected>Warranty</option>
-                                <option value="None Warranty">None Warranty</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-md-3 col-4">
-                        <div class="form-group">
-                            <label>Warranty Duration:</label>
-                            <input class="form-control" type="number" name="warranty_duration[]" placeholder="1"
-                                required>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-2 col-md-3 col-4">
-                        <div class="form-group">
-                            <label>Used:</label>
-                            <input class="form-control" type="number" name="used[]" placeholder="1" required>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-5 col-md-6">
-                        <div class="form-group">
-                            <label>Return Reason:</label>
-                            <input class="form-control" type="text" name="return_reason[]"
-                                placeholder="Item arrived too late" required>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-5 col-md-6 ">
-                        <div class="form-group">
-                            <label>Comment/Required:</label>
-                            <input class="form-control" type="text" name="comment[]"
-                                placeholder="Not required any more" required>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
     </div>
-        `);
-            });
-        })
-    </script>
+
+
+
+    <div>
+        {{ $invoice_bill->links() }}
+    </div>
+
 @endsection
-
-
 
 
 {{-- page sidebar_for_active --}}
@@ -348,7 +227,7 @@
 
 
         <li class="nav-item {{ Request::is('admin_invoice_bill') ? 'active' : '' }}">
-            <a class="nav-link " href="{{ url('admin_invoice_bill') }}">
+            <a class="nav-link active" href="{{ url('admin_invoice_bill') }}">
                 <div
                     class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                     <svg width="12px" height="12px" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
@@ -377,7 +256,7 @@
         </li>
 
         <li class="nav-item {{ Request::is('purchase_return') ? 'active' : '' }}">
-            <a class="nav-link active" href="{{ url('purchase_return') }}">
+            <a class="nav-link" href="{{ url('purchase_return') }}">
                 <div
                     class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
@@ -389,6 +268,7 @@
                 <span class="nav-link-text ms-1">Purchase Return</span>
             </a>
         </li>
+
 
 
         <li class="nav-item {{ Request::is('admin_category') ? 'active' : '' }}">

@@ -25,76 +25,133 @@ Admin - Purchase Return
 @section('admin_content')
 
 <div class="row">
-
     <div class="col-md-12">
-        <div class="card mb-4">
-            <div class="card-header pb-0">
-                <div style="display: flex; justify-content: space-between;" class="mb-2">
-                    <h6>Edit Purchase Return</h6>
+        <form action="{{ url('update_purchase_return', $customer->id) }}" method="POST">
+            @csrf
+
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <div style="display: flex; justify-content: space-between;">
+                        <h6>Edit Customer Information</h6>
+                    </div>
+                </div>
+
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive px-4">
+                        <div class="row mt-3">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="form-group">
+                                    <label>Customer Name: </label>
+                                    <input class="form-control" type="text" name="name" value="{{$customer->name}}" placeholder="Abu Naiim" required>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-6">
+                                <div class="form-group">
+                                    <label>Number: </label>
+                                    <input class="form-control" type="text" name="phone" value="{{$customer->phone}}" placeholder="01xxxxxxxxx" required>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-6">
+                                <div class="form-group">
+                                    <label>Email: </label>
+                                    <input class="form-control" type="text" name="email" value="{{$customer->email}}" placeholder="email@gmail.com" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
 
-            <div class="card-body px-0 pt-0 pb-2">
-                <div class="table-responsive px-4">
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <div style="display: flex; justify-content: space-between;">
+                        <h6>Edit Product Information</h6>
+                        <a href="javascript:void(0)" class="add-more-form btn btn-success btn-sm">+</a>
+                    </div>
+                </div>
 
-                    <form action="{{ url('update_purchase_return', $return_product->id) }}" method="POST">
-                        @csrf
+                @foreach ($return_product as $row)
+                <div class="card-body px-0 pt-0">
+                    <div class="table-responsive px-4">
                         <div class="row mt-3">
-                            <div class="col-lg-3 col-md-6">
-                                <div class="form-group">
-                                    <label>Product Name: </label>
-                                    <input type="text" id="search_purchase_return_name" name="search" value="{{$return_product->product_name}}" placeholder="Search Product" class="form-control" />
-                                </div>
-                            </div>
 
-                            <div class="col-lg-3 col-md-6">
-                                <label>Category:</label>
+                            <input name="prodId[]" type="hidden" class="form_control"value="{{ $row->id }}" required>
+                            
+                            <div class="col-lg-2 col-md-3 col-4">
+                                <label>Product Name: </label>
                                 <div class="form-group">
-                                    <select required class="form-control" name="category_id" data-placeholder="Choose Category">
-                                        @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}" {{ $category->id == $return_product->category_id ? 'selected' : '' }}>
-                                            {{ $category->category_name }}
-                                        </option>
+                                    <select id="" type="text" name="product_name[]"
+                                        class="form-select form-select" aria-label="Default select example">
+                                        @foreach ($stock as $stocks)
+                                            <option value="{{ $stocks->product_name }}" {{ $stocks->product_name == $row->product_name ? 'selected' : ''}}>
+                                                {{ $stocks->product_name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
+  
 
-                            <div class="col-lg-3 col-md-6">
+                            <div class="col-lg-2 col-md-3 col-4">
                                 <div class="form-group">
                                     <label>Brand:</label>
-                                    <input class="form-control" type="text" name="brand" value="{{$return_product->brand}}" placeholder="TP-Link" required>
+                                    <input class="form-control" type="text" value="{{$row->brand}}" name="brand[]" placeholder="TP-Link" required>
                                 </div>
                             </div>
 
-                            <div class="col-lg-3 col-md-6">
+                            <div class="col-lg-2 col-md-3 col-4">
                                 <div class="form-group">
                                     <label>Quantity:</label>
-                                    <input class="form-control" type="number" name="product_quantity" value="{{$return_product->product_quantity}}" placeholder="10" required>
+                                    <input class="form-control" type="number" value="{{$row->product_quantity}}" name="product_quantity[]" placeholder="10" required>
                                 </div>
                             </div>
 
+                            <div class="col-lg-2 col-md-3 col-4">
+                                <div class="form-group">
+                                    <label>Warranty:</label>
+                                    <select class="form-select" value="{{$row->warranty}}" name="warranty[]" aria-label="Default select example">
+                                        <option selected>Warranty</option>
+                                        <option value="None Warranty">None Warranty</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-4">
+                                <div class="form-group">
+                                    <label>Warranty Duration:</label>
+                                    <input class="form-control" type="number" value="{{$row->warranty_duration}}" name="warranty_duration[]" placeholder="1" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-4">
+                                <div class="form-group">
+                                    <label>Used(month/year):</label>
+                                    <input class="form-control" type="number" value="{{$row->used}}" name="used[]" placeholder="1" required>
+                                </div>
+                            </div>
                             <div class="col-lg-6 col-md-6">
                                 <div class="form-group">
                                     <label>Return Reason:</label>
-                                    <input class="form-control" type="text" name="return_reason" value="{{$return_product->return_reason}}" placeholder="Item arrived too late" required>
+                                    <input class="form-control" type="text" value="{{$row->return_reason}}" name="return_reason[]" placeholder="Item arrived too late" required>
                                 </div>
                             </div>
 
-                            <div class="col-lg-6 col-md-6">
+                            <div class="col-lg-6 col-md-6 ">
                                 <div class="form-group">
                                     <label>Comment/Required:</label>
-                                    <input class="form-control" type="text" name="comment" value="{{$return_product->comment}}" placeholder="Not required any more" required>
+                                    <input class="form-control" type="text" value="{{$row->comment}}" name="comment[]" placeholder="Not required any more" required>
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn bg-gradient-info w-100 mb-0">Updated</button>
-                    </form>
-
+                    </div>
                 </div>
+                @endforeach
             </div>
-        </div>
+            <div class="paste-new-forms"></div>
+
+            <button type="submit" class="btn bg-gradient-info w-100 mb-0">Update</button>
+        </form>
     </div>
 </div>
 

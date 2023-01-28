@@ -31,8 +31,7 @@ class InvoiceBillController extends Controller
         //dd($invoice_bill);
         return view("admin.InvoiceBill.index", compact('invoice_bill', 'subtotal', 'bill_count'));
     }
-
-
+    
     //========================PDF Seen============================
     public function seen_invoicebill($id)
     {
@@ -54,9 +53,10 @@ class InvoiceBillController extends Controller
         $subtotal = ProductInvoice::all()->where('user_ip', request()->ip())->sum(function ($t) {
             return $t->price * $t->qty;
         });
-        $stock = DB::table('shop_stocks')->latest()->get();
+        $stock = DB::table('shop_stocks')->latest()->get(); 
+        $product_stock = ShopStock::select('product_name')->where('status', '1')->where('product_quantity', '>', 0)->get();
 
-        return view("admin.InvoiceBill.add_invoice", compact('product_invoice', 'subtotal', 'stock'));
+        return view("admin.InvoiceBill.add_invoice", compact('product_invoice', 'subtotal', 'stock', 'product_stock'));
     }
 
     //======================product_invoice_store======================
@@ -94,6 +94,9 @@ class InvoiceBillController extends Controller
             'invoice_no' => 'SHOPNO-' . (mt_rand(10000000, 99999999)),
             'previous_due' => $request->previous_due,
             'subtotal' => $request->subtotal,
+            'net_oustanding' => $request->previous_due + $request->subtotal - $request->collecton,
+            'payment_status' => $request->payment_status,
+            'payment_type' => $request->payment_type,
             'collecton' => $request->collecton,
             'created_at' => Carbon::now(),
         ]);
@@ -164,7 +167,7 @@ class InvoiceBillController extends Controller
             return $item->price * $item->product_qty;
         });
 
-        InvoiceBill::where('id', $id)->update([
+        InvoiceBill::where('id', $id)->update([ 
             'previous_due' => $request->previous_due,
             //'subtotal' => $subtotal,
             'subtotal' => $request->subtotal,
@@ -207,21 +210,21 @@ class InvoiceBillController extends Controller
         $invoice_bill =  DB::table('customer_information')
             ->join('invoice_bills', 'customer_information.order_id', 'invoice_bills.id') //join
             //customer_information
-            ->where('date', 'like', '%' . $request->search . '%')
-            ->orWhere('name', 'like', '%' . $request->search . '%')
-            ->orWhere('person', 'like', '%' . $request->search . '%')
-            ->orWhere('phone', 'like', '%' . $request->search . '%')
-            ->orWhere('email', 'like', '%' . $request->search . '%')
-            ->orWhere('address', 'like', '%' . $request->search . '%')
-            ->orWhere('ref_by', 'like', '%' . $request->search . '%')
-            ->orWhere('sold_by', 'like', '%' . $request->search . '%')
+            ->where('date', 'like',  $request->search )
+            ->orWhere('name', 'like',  $request->search )
+            //->orWhere('person', 'like', '%' . $request->search . '%')
+            ->orWhere('phone', 'like',  $request->search )
+            ->orWhere('email', 'like',  $request->search )
+            ->orWhere('address', 'like',  $request->search )
+            //->orWhere('ref_by', 'like', '%' . $request->search . '%')
+            //->orWhere('sold_by', 'like', '%' . $request->search . '%')
             //invoice_bills
-            ->orWhere('invoice_no', 'like', '%' . $request->search . '%')
-            ->orWhere('subtotal', 'like', '%' . $request->search . '%')
+            ->orWhere('invoice_no', 'like',  $request->search )
+            ->orWhere('subtotal', 'like',  $request->search )
             ->paginate(20);
 
         $query = DB::table('customer_information')->join('invoice_bills', 'customer_information.order_id', 'invoice_bills.id');
-        $columns = ['date', 'name', 'person', 'phone', 'email', 'invoice_no'];
+        $columns = ['date', 'name', 'address', 'phone', 'email', 'invoice_no'];
         foreach ($columns as $column) {
             $query->orWhere($column, $request->search);
         }
@@ -240,12 +243,12 @@ class InvoiceBillController extends Controller
         foreach ($customer as $item) {
             $data[] = $item['name'];
             $data[] = $item['date'];
-            $data[] = $item['person'];
+            //$data[] = $item['person'];
             $data[] = $item['phone'];
             $data[] = $item['email'];
             $data[] = $item['address'];
-            $data[] = $item['ref_by'];
-            $data[] = $item['sold_by'];
+            //$data[] = $item['ref_by'];
+            //$data[] = $item['sold_by'];
         }
         foreach ($invoice as $item) {
             $data[] = $item['invoice_no'];
@@ -279,4 +282,117 @@ class InvoiceBillController extends Controller
 
         return view('admin.InvoiceBill.index', compact('invoice_bill', 'subtotal', 'bill_count'));
     }
+
+
+//************************************************************************************************************************ */
+    public function admin_payment_status()
+    {
+        $invoice_bill = DB::table('invoice_bills')
+            ->join('customer_information', 'invoice_bills.id', 'customer_information.order_id') //join
+            ->select("invoice_bills.*", "customer_information.name as name", "customer_information.date as date", "customer_information.phone as phone") //if same column in a table
+            ->orderBy('invoice_bills.id', 'DESC')->where('payment_status', '=', 'Due')->paginate(20);
+
+        $subtotal = DB::table('invoice_bills')->where('payment_status', '=', 'Due')->select('net_oustanding')->sum('net_oustanding');
+        $bill_count = DB::table('invoice_bills')->where('payment_status', '=', 'Due')->select('net_oustanding')->count('net_oustanding');
+
+        //dd($invoice_bill);
+        return view("admin.InvoiceBill.due", compact('invoice_bill', 'subtotal', 'bill_count'));
+    }
+
+    public function admin_payment_status_paid()
+    {
+        $invoice_bill = DB::table('invoice_bills')
+            ->join('customer_information', 'invoice_bills.id', 'customer_information.order_id') //join
+            ->select("invoice_bills.*", "customer_information.name as name", "customer_information.date as date", "customer_information.phone as phone") //if same column in a table
+            ->orderBy('invoice_bills.id', 'DESC')->where('payment_status', '=', 'Paid')->paginate(20);
+
+        $subtotal = DB::table('invoice_bills')->where('payment_status', '=', 'Paid')->select('collecton')->sum('collecton');
+        $bill_count = DB::table('invoice_bills')->where('payment_status', '=', 'Paid')->select('collecton')->count('collecton');
+
+        //dd($invoice_bill);
+        return view("admin.InvoiceBill.paid", compact('invoice_bill', 'subtotal', 'bill_count'));
+    }
+
+
+    public function invoice_search_payment_due(Request $request)
+    {
+        $invoice_bill =  DB::table('customer_information')
+            ->join('invoice_bills', 'customer_information.order_id', 'invoice_bills.id') //join
+            //customer_information
+            ->where('date', 'like',  $request->search )
+            ->orWhere('name', 'like',  $request->search )
+            //->orWhere('person', 'like', '%' . $request->search . '%')
+            ->orWhere('phone', 'like',  $request->search )
+            ->orWhere('email', 'like',  $request->search )
+            ->orWhere('address', 'like',  $request->search )
+            //->orWhere('ref_by', 'like', '%' . $request->search . '%')
+            //->orWhere('sold_by', 'like', '%' . $request->search . '%')
+            //invoice_bills
+            ->orWhere('invoice_no', 'like',  $request->search )
+            ->orWhere('subtotal', 'like',  $request->search )
+            ->where('invoice_bills.payment_status', '=', 'Due') ->paginate(20);
+           
+        $query = DB::table('customer_information')->join('invoice_bills', 'customer_information.order_id', 'invoice_bills.id');
+        $columns = ['date', 'name', 'address', 'phone', 'email', 'invoice_no'];
+        foreach ($columns as $column) {
+            $query->orWhere($column, $request->search);
+        }
+        $subtotal = $query->where('payment_status', '=', 'Due')->select('net_oustanding')->sum('net_oustanding');
+        $bill_count = $query->where('payment_status', '=', 'Due')->select('net_oustanding')->count('net_oustanding');
+
+        return view("admin.InvoiceBill.due", compact("invoice_bill", 'subtotal', 'bill_count'));
+    }
+
+
+    public function invoice_search_payment_paid(Request $request)
+    {
+        $invoice_bill =  DB::table('customer_information')
+            ->join('invoice_bills', 'customer_information.order_id', 'invoice_bills.id') //join
+            //customer_information
+            ->where('date', 'like',  $request->search )
+            ->orWhere('name', 'like',  $request->search )
+            //->orWhere('person', 'like', '%' . $request->search . '%')
+            ->orWhere('phone', 'like',  $request->search )
+            ->orWhere('email', 'like',  $request->search )
+            ->orWhere('address', 'like',  $request->search )
+            //->orWhere('ref_by', 'like', '%' . $request->search . '%')
+            //->orWhere('sold_by', 'like', '%' . $request->search . '%')
+            //invoice_bills
+            ->orWhere('invoice_no', 'like',  $request->search )
+            ->orWhere('subtotal', 'like',  $request->search )
+            ->where('invoice_bills.payment_status', '=', 'Paid')->paginate(20);
+
+        $query = DB::table('customer_information')->join('invoice_bills', 'customer_information.order_id', 'invoice_bills.id');
+        $columns = ['date', 'name', 'address', 'phone', 'email', 'invoice_no'];
+        foreach ($columns as $column) {
+            $query->orWhere($column, $request->search);
+        }
+        $subtotal = $query->where('payment_status', '=', 'Paid')->select('collecton')->sum('collecton');
+        $bill_count = $query->where('payment_status', '=', 'Paid')->select('collecton')->count('collecton');
+
+        return view("admin.InvoiceBill.paid", compact("invoice_bill", 'subtotal', 'bill_count'));
+    }
+
+    public function add_due_payment($id)
+    {
+        $bill = InvoiceBill::find($id);
+        return response()->json([
+            'status' => 200,
+            'bill' => $bill,
+        ]);
+    }
+
+    public function due_payment_update(Request $request)
+    {
+        //find id
+        $id = $request->input('id');
+        $bill = InvoiceBill::find($id);
+        $bill->collecton = $request->input('collecton') + $request->input('collecton_previous');
+        $bill->net_oustanding = $request->input('net_oustanding') - $request->input('collecton');
+        $bill->payment_status = $request->input('payment_status');
+        $bill->update();
+        
+        return Redirect()->back()->with('status_swal', 'Payment Updated');
+    }
+
 }

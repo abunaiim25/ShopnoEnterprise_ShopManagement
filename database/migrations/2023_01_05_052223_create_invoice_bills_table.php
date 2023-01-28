@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('subtotal')->nullable();
             $table->string('previous_due')->nullable();
             $table->string('collecton')->nullable();
+            $table->string('net_oustanding')->nullable();
+            $table->string('payment_type')->nullable();
+            $table->string('payment_status')->nullable();
             $table->tinyInteger('status')->default('0');
             $table->timestamps();
         });
